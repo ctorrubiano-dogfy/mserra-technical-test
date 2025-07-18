@@ -1,0 +1,7 @@
+export enum DeliveryStatusValueObject {
+  PENDING = 'PENDING',
+  LABEL_GENERATED = 'LABEL_GENERATED',
+  IN_TRANSIT = 'IN_TRANSIT',
+  DELIVERED = 'DELIVERED',
+  FAILED = 'FAILED'
+}
