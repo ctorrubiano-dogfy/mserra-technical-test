@@ -8,6 +8,7 @@ import DeliveriesStatusPollUseCase from '../application/useCases/DeliveriesStatu
 import TLSProviderRepository from './providers/TLSProviderRepository';
 import DeliveryStatusUpdateFromWebhookUseCase from '../application/useCases/DeliveryStatusUpdateFromWebhookUseCase';
 import RandomProviderSelector from './misc/RandomProviderSelector';
+import DistanceBasedProviderSelector from './misc/DistanceBasedProviderSelector';
 
 const providerMap: Record<ProviderValueObject, ProviderRepositoryInterface> = {
   [ProviderValueObject.NRW]: new NRWProviderRepository(),
@@ -15,7 +16,8 @@ const providerMap: Record<ProviderValueObject, ProviderRepositoryInterface> = {
 };
 const deliveryRepository = new MongoDeliveryRepository();
 const randomProviderSelector = new RandomProviderSelector();
-const providerSelectUseCase = new ProviderSelectUseCase(randomProviderSelector);
+const distanceBasedProviderSelector = new DistanceBasedProviderSelector();
+const providerSelectUseCase = new ProviderSelectUseCase(distanceBasedProviderSelector);
 const deliveryCreateUseCase = new DeliveryCreateUseCase(deliveryRepository, providerSelectUseCase, providerMap);
 const deliveriesStatusPollUseCase = new DeliveriesStatusPollUseCase(deliveryRepository, providerMap);
 const deliveryStatusUpdateFromWebhookUseCase = new DeliveryStatusUpdateFromWebhookUseCase(deliveryRepository, providerMap);
