@@ -9,7 +9,7 @@ import TLSProviderRepository from './providers/TLSProviderRepository';
 import DeliveryStatusUpdateFromWebhookUseCase from '../application/useCases/DeliveryStatusUpdateFromWebhookUseCase';
 import RandomProviderSelector from './misc/RandomProviderSelector';
 import DistanceBasedProviderSelector from './misc/DistanceBasedProviderSelector';
-import DeliveryInfoUseCase from '../application/useCases/DeliveryInfoUseCase';
+import DeliveryFindUseCase from '../application/useCases/DeliveryFindUseCase';
 
 const providerMap: Record<ProviderValueObject, ProviderRepositoryInterface> = {
   [ProviderValueObject.NRW]: new NRWProviderRepository(),
@@ -22,7 +22,7 @@ const providerSelectUseCase = new ProviderSelectUseCase(distanceBasedProviderSel
 const deliveryCreateUseCase = new DeliveryCreateUseCase(deliveryRepository, providerSelectUseCase, providerMap);
 const deliveriesStatusPollUseCase = new DeliveriesStatusPollUseCase(deliveryRepository, providerMap);
 const deliveryStatusUpdateFromWebhookUseCase = new DeliveryStatusUpdateFromWebhookUseCase(deliveryRepository, providerMap);
-const deliveryInfoUseCase = new DeliveryInfoUseCase(deliveryRepository);
+const deliveryFindUseCase = new DeliveryFindUseCase(deliveryRepository);
 
 // Container for dependencies
 export default {
@@ -32,5 +32,5 @@ export default {
   deliveryCreateUseCase,
   deliveriesStatusPollUseCase,
   deliveryStatusUpdateFromWebhookUseCase,
-  deliveryInfoUseCase,
+  deliveryFindUseCase,
 };

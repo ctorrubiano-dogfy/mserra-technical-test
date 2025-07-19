@@ -51,7 +51,7 @@ async function deliveryRoutes(fastify: FastifyInstance, opts: any) {
   
   fastify.get('/deliveries/:id', async (req, reply) => {
     const { id } = req.params as { id: string };
-    const delivery = await dependenciesContainer.deliveryInfoUseCase.findById(id);
+    const delivery = await dependenciesContainer.deliveryFindUseCase.findById(id);
     
     if (!delivery) return reply.code(404).send({ error: 'Delivery not found.' });
     
@@ -60,7 +60,7 @@ async function deliveryRoutes(fastify: FastifyInstance, opts: any) {
 
   fastify.get('/deliveries/tracking/:trackingNumber', async (req, reply) => {
     const { trackingNumber } = req.params as { trackingNumber: string };
-    const delivery = await dependenciesContainer.deliveryInfoUseCase.findByTrackingNumber(trackingNumber);
+    const delivery = await dependenciesContainer.deliveryFindUseCase.findByTrackingNumber(trackingNumber);
     
     if (!delivery) return reply.code(404).send({ error: 'Delivery not found.' });
     
