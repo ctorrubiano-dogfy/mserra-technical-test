@@ -70,7 +70,6 @@ async function deliveryRoutes(fastify: FastifyInstance, opts: any) {
 
 async function start() {
   try {
-    console.log('✅ Fastify server listening at http://localhost:3000');
     await fastify.register(deliveryRoutes);
     await fastify.listen({ port: 3000 });
     console.log('✅ Fastify server listening at http://localhost:3000');
