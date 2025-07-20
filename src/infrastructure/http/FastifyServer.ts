@@ -1,6 +1,10 @@
 // This file can be separated into different files, but for simplicity, we keep it all fastify things here.
 import Fastify, { FastifyInstance } from 'fastify';
+
+import HttpError from '../../shared/errors/HttpError';
+
 import { DeliveryCreateDTO } from '../../application/dtos/DeliveryCreateDTO';
+import { DeliveryFindRequestDTO } from '../../application/dtos/DeliveryFindDTO';
 import { ShipmentResponseDTO } from '../../application/dtos/ShipmentResponseDTO';
 import dependenciesContainer from '../container';
 
@@ -48,23 +52,38 @@ async function deliveryRoutes(fastify: FastifyInstance, opts: any) {
 
     reply.code(200).send();
   });
-  
+
   fastify.get('/deliveries/:id', async (req, reply) => {
-    const { id } = req.params as { id: string };
-    const delivery = await dependenciesContainer.deliveryFindUseCase.findById(id);
-    
-    if (!delivery) return reply.code(404).send({ error: 'Delivery not found.' });
-    
-    return delivery;
+    const { id } = req.params as DeliveryFindRequestDTO;
+
+    try {
+      const delivery = await dependenciesContainer.deliveryFindUseCase.execute({ id });
+
+      return delivery;
+    } catch (error) {
+      if (error instanceof HttpError) {
+        return reply.code(error.statusCode).send({ error });
+      }
+
+      return reply.code(500).send({ error });
+    }
   });
 
   fastify.get('/deliveries/tracking/:trackingNumber', async (req, reply) => {
-    const { trackingNumber } = req.params as { trackingNumber: string };
-    const delivery = await dependenciesContainer.deliveryFindUseCase.findByTrackingNumber(trackingNumber);
-    
-    if (!delivery) return reply.code(404).send({ error: 'Delivery not found.' });
-    
-    return delivery;
+    const { trackingNumber } = req.params as DeliveryFindRequestDTO;
+
+    try {
+      const delivery = await dependenciesContainer.deliveryFindUseCase.execute({ trackingNumber });
+      if (!delivery) return reply.code(404).send({ error: 'Delivery not found.' });
+
+      return delivery;
+    } catch (error) {
+      if (error instanceof HttpError) {
+        return reply.code(error.statusCode).send({ error });
+      }
+
+      return reply.code(500).send({ error });
+    }
   });
 }
 

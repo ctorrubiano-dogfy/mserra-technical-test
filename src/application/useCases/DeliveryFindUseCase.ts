@@ -1,12 +1,29 @@
 import { DeliveryRepositoryInterface } from "../../domain/interfaces/DeliveryRepositoryInterface";
-import { DeliveryInfoResponseDTO } from "../dtos/DeliveryInfoResponseDTO";
+import { DeliveryFindResponseDTO, DeliveryFindRequestDTO } from "../dtos/DeliveryFindDTO";
+import { DeliveryFindUseCaseInterface } from "../interfaces/DeliveryFindUseCaseInterface";
 
-class DeliveryInfoUseCase {
+import NotFoundError from "../../shared/errors/NotFoundError";
+
+class DeliveryFindUseCase implements DeliveryFindUseCaseInterface {
   constructor(private readonly deliveryRepository: DeliveryRepositoryInterface) {}
 
-  async findById(deliveryId: string): Promise<DeliveryInfoResponseDTO | null> {
-    const delivery = await this.deliveryRepository.findById(deliveryId);
-    if (!delivery) return null;
+  async execute(request: DeliveryFindRequestDTO): Promise<DeliveryFindResponseDTO> {
+    let delivery = null;
+
+    if (request.id) {
+      delivery = await this.findById(request.id);
+    } else if (request.trackingNumber) {
+      delivery = await this.findByTrackingNumber(request.trackingNumber);
+    }
+
+    if (!delivery) throw new NotFoundError("Delivery not found.");
+    
+    return delivery;
+  }
+
+  async findById(id: string): Promise<DeliveryFindResponseDTO> {
+    const delivery = await this.deliveryRepository.findById(id);
+    if (!delivery) throw new NotFoundError(`Delivery with ID ${id} not found.`);
     
     return {
       id: delivery.id,
@@ -25,9 +42,9 @@ class DeliveryInfoUseCase {
     };
   }
 
-  async findByTrackingNumber(trackingNumber: string): Promise<DeliveryInfoResponseDTO | null> {
+  async findByTrackingNumber(trackingNumber: string): Promise<DeliveryFindResponseDTO> {
     const delivery = await this.deliveryRepository.findByTrackingNumber(trackingNumber);
-    if (!delivery) return null;
+    if (!delivery) throw new NotFoundError(`Delivery with tracking number ${trackingNumber} not found.`);
 
     return {
       id: delivery.id,
@@ -47,4 +64,4 @@ class DeliveryInfoUseCase {
   }
 }
 
-export default DeliveryInfoUseCase;
+export default DeliveryFindUseCase;
