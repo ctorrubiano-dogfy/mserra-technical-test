@@ -74,7 +74,6 @@ async function deliveryRoutes(fastify: FastifyInstance, opts: any) {
 
     try {
       const delivery = await dependenciesContainer.deliveryFindUseCase.execute({ trackingNumber });
-      if (!delivery) return reply.code(404).send({ error: 'Delivery not found.' });
 
       return delivery;
     } catch (error) {
