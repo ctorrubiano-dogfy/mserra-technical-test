@@ -1,6 +1,7 @@
-import { DeliveryRepositoryInterface } from "../../domain/interfaces/DeliveryRepositoryInterface";
 import { DeliveryFindResponseDTO, DeliveryFindRequestDTO } from "../dtos/DeliveryFindDTO";
 import { UseCase } from "../interfaces/UseCaseInterface";
+
+import { DeliveryRepositoryInterface } from "../../domain/interfaces/DeliveryRepositoryInterface";
 
 import NotFoundError from "../../shared/errors/NotFoundError";
 import BadRequestError from "../../shared/errors/BadRequestError";

@@ -1,9 +1,10 @@
+import { UseCase } from '../interfaces/UseCaseInterface';
+
 import { DeliveryRepositoryInterface } from '../../domain/interfaces/DeliveryRepositoryInterface';
 import { ProviderRepositoryInterface } from '../../domain/interfaces/ProviderRepositoryInterface';
 import { ProviderValueObject } from '../../domain/value-objects/ProviderValueObject';
 import { DeliveryStatusValueObject } from '../../domain/value-objects/DeliveryStatusValueObject';
 import DeliveryEntity from '../../domain/entities/DeliveryEntity';
-import { UseCase } from '../interfaces/UseCaseInterface';
 
 class DeliveriesStatusPollUseCase implements UseCase<void, void> {
   constructor(

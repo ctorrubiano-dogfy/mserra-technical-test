@@ -1,12 +1,12 @@
 // This file can be separated into different files, but for simplicity, we keep it all fastify things here.
 import Fastify, { FastifyInstance } from 'fastify';
 
-import HttpError from '../../shared/errors/HttpError';
-
 import { DeliveryCreateDTO } from '../../application/dtos/DeliveryCreateDTO';
 import { DeliveryFindRequestDTO } from '../../application/dtos/DeliveryFindDTO';
 import { ShipmentResponseDTO } from '../../application/dtos/ShipmentResponseDTO';
 import dependenciesContainer from '../container';
+
+import HttpError from '../../shared/errors/HttpError';
 
 const fastify = Fastify({ logger: false });
 
@@ -39,7 +39,7 @@ async function deliveryRoutes(fastify: FastifyInstance, opts: any) {
     const body: TLSWebhookPayload = req.body as TLSWebhookPayload;
     const { trackingNumber, status } = body;
 
-    await dependenciesContainer.deliveryStatusUpdateFromWebhookUseCase.execute(trackingNumber, status);
+    await dependenciesContainer.deliveryStatusUpdateFromWebhookUseCase.execute({ trackingNumber, status });
 
     reply.code(200).send();
   });
@@ -48,7 +48,7 @@ async function deliveryRoutes(fastify: FastifyInstance, opts: any) {
     const body: NRWWebhookPayload = req.body as NRWWebhookPayload;
     const { trackingNumber, status } = body;
 
-    await dependenciesContainer.deliveryStatusUpdateFromWebhookUseCase.execute(trackingNumber, status);
+    await dependenciesContainer.deliveryStatusUpdateFromWebhookUseCase.execute({ trackingNumber, status });
 
     reply.code(200).send();
   });
