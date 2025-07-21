@@ -7,8 +7,9 @@ import { DeliveryRepositoryInterface } from '../../domain/interfaces/DeliveryRep
 import { DeliveryStatusValueObject } from '../../domain/value-objects/DeliveryStatusValueObject';
 import DeliveryEntity from '../../domain/entities/DeliveryEntity';
 import ProviderSelectUseCase from './ProviderSelectUseCase';
+import { UseCase } from '../interfaces/UseCaseInterface';
 
-class DeliveryCreateUseCase {
+class DeliveryCreateUseCase implements UseCase<DeliveryCreateDTO, ShipmentResponseDTO> {
   constructor(
     private deliveryRepository: DeliveryRepositoryInterface,
     private providerSelectUseCase: ProviderSelectUseCase,

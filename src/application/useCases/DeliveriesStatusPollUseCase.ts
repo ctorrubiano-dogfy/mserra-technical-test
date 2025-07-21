@@ -3,8 +3,9 @@ import { ProviderRepositoryInterface } from '../../domain/interfaces/ProviderRep
 import { ProviderValueObject } from '../../domain/value-objects/ProviderValueObject';
 import { DeliveryStatusValueObject } from '../../domain/value-objects/DeliveryStatusValueObject';
 import DeliveryEntity from '../../domain/entities/DeliveryEntity';
+import { UseCase } from '../interfaces/UseCaseInterface';
 
-class DeliveriesStatusPollUseCase {
+class DeliveriesStatusPollUseCase implements UseCase<void, void> {
   constructor(
     private deliveryRepository: DeliveryRepositoryInterface,
     private providerMap: Record<ProviderValueObject, ProviderRepositoryInterface>
