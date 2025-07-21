@@ -1,66 +1,35 @@
 import { DeliveryRepositoryInterface } from "../../domain/interfaces/DeliveryRepositoryInterface";
 import { DeliveryFindResponseDTO, DeliveryFindRequestDTO } from "../dtos/DeliveryFindDTO";
-import { DeliveryFindUseCaseInterface } from "../interfaces/DeliveryFindUseCaseInterface";
+import { UseCase } from "../interfaces/UseCaseInterface";
 
 import NotFoundError from "../../shared/errors/NotFoundError";
+import BadRequestError from "../../shared/errors/BadRequestError";
 
-class DeliveryFindUseCase implements DeliveryFindUseCaseInterface {
+class DeliveryFindUseCase implements UseCase<DeliveryFindRequestDTO, DeliveryFindResponseDTO> {
   constructor(private readonly deliveryRepository: DeliveryRepositoryInterface) {}
 
-  async execute(request: DeliveryFindRequestDTO): Promise<DeliveryFindResponseDTO> {
-    let delivery = null;
+  async execute({ id, trackingNumber }: DeliveryFindRequestDTO): Promise<DeliveryFindResponseDTO> {
+    const reference = id || trackingNumber;
+    if (!reference) throw new BadRequestError("Reference number must be provided.");
 
-    if (request.id) {
-      delivery = await this.findById(request.id);
-    } else if (request.trackingNumber) {
-      delivery = await this.findByTrackingNumber(request.trackingNumber);
+    const delivery = await this.deliveryRepository.find(reference);
+    if (!delivery) throw new NotFoundError(`Delivery with ID ${reference} not found.`);
+
+    return {
+      id: delivery.id,
+      status: delivery.status,
+      deliveryDate: delivery.deliveryDate,
+      address: delivery.address,
+      recipientName: delivery.recipientName,
+      country: delivery.country,
+      postalCode: delivery.postalCode,
+      label: delivery.label,
+      trackingNumber: delivery.trackingNumber,
+      provider: delivery.provider,
+      weight: delivery.weight,
+      email: delivery.email,
+      phoneNumber: delivery.phoneNumber,
     }
-
-    if (!delivery) throw new NotFoundError("Delivery not found.");
-    
-    return delivery;
-  }
-
-  async findById(id: string): Promise<DeliveryFindResponseDTO> {
-    const delivery = await this.deliveryRepository.findById(id);
-    if (!delivery) throw new NotFoundError(`Delivery with ID ${id} not found.`);
-    
-    return {
-      id: delivery.id,
-      status: delivery.status,
-      deliveryDate: delivery.deliveryDate,
-      address: delivery.address,
-      recipientName: delivery.recipientName,
-      country: delivery.country,
-      postalCode: delivery.postalCode,
-      label: delivery.label,
-      trackingNumber: delivery.trackingNumber,
-      provider: delivery.provider,
-      weight: delivery.weight,
-      email: delivery.email,
-      phoneNumber: delivery.phoneNumber,
-    };
-  }
-
-  async findByTrackingNumber(trackingNumber: string): Promise<DeliveryFindResponseDTO> {
-    const delivery = await this.deliveryRepository.findByTrackingNumber(trackingNumber);
-    if (!delivery) throw new NotFoundError(`Delivery with tracking number ${trackingNumber} not found.`);
-
-    return {
-      id: delivery.id,
-      status: delivery.status,
-      deliveryDate: delivery.deliveryDate,
-      address: delivery.address,
-      recipientName: delivery.recipientName,
-      country: delivery.country,
-      postalCode: delivery.postalCode,
-      label: delivery.label,
-      trackingNumber: delivery.trackingNumber,
-      provider: delivery.provider,
-      weight: delivery.weight,
-      email: delivery.email,
-      phoneNumber: delivery.phoneNumber,
-    };
   }
 }
 
