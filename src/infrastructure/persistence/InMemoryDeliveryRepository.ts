@@ -1,7 +1,9 @@
 import {  DeliveryRepositoryInterface } from '../../domain/interfaces/DeliveryRepositoryInterface';
 import { FINAL_DELIVERY_STATUSES } from '../../domain/constants';
 import DeliveryEntity from '../../domain/entities/DeliveryEntity';
+
 import NotFoundError from '../../shared/errors/NotFoundError';
+
 class InMemoryDeliveryRepository implements DeliveryRepositoryInterface {
   private deliveries: DeliveryEntity[] = [];
 
@@ -9,9 +11,9 @@ class InMemoryDeliveryRepository implements DeliveryRepositoryInterface {
     this.deliveries.push(delivery);
   }
 
-  async find(id: string): Promise<DeliveryEntity> {
-    const delivery = this.deliveries.find(delivery => delivery.id === id || delivery.trackingNumber === id);
-    if (!delivery) throw new NotFoundError(`Delivery with id ${id} not found`);
+  async find(reference: string): Promise<DeliveryEntity> {
+    const delivery = this.deliveries.find(delivery => delivery.id === reference || delivery.trackingNumber === reference);
+    if (!delivery) throw new NotFoundError(`Delivery with reference ${reference} not found.`);
 
     return delivery;
   }
@@ -22,7 +24,7 @@ class InMemoryDeliveryRepository implements DeliveryRepositoryInterface {
 
   async updateById(deliveryId: string, delivery: DeliveryEntity): Promise<void> {
     const index: number = this.deliveries.findIndex(d => d.id === deliveryId);
-    if (index === -1) throw new Error(`Delivery with id ${deliveryId} not found`);
+    if (index === -1) throw new NotFoundError(`Delivery with id ${deliveryId} not found.`);
     this.deliveries[index] = delivery;
   }
 }
