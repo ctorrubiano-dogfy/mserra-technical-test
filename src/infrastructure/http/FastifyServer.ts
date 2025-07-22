@@ -1,8 +1,12 @@
 // This file can be separated into different files, but for simplicity, we keep it all fastify things here.
 import Fastify, { FastifyInstance } from 'fastify';
+
 import { DeliveryCreateDTO } from '../../application/dtos/DeliveryCreateDTO';
+import { DeliveryFindRequestDTO } from '../../application/dtos/DeliveryFindDTO';
 import { ShipmentResponseDTO } from '../../application/dtos/ShipmentResponseDTO';
 import dependenciesContainer from '../container';
+
+import HttpError from '../../shared/errors/HttpError';
 
 const fastify = Fastify({ logger: false });
 
@@ -35,7 +39,7 @@ async function deliveryRoutes(fastify: FastifyInstance, opts: any) {
     const body: TLSWebhookPayload = req.body as TLSWebhookPayload;
     const { trackingNumber, status } = body;
 
-    await dependenciesContainer.deliveryStatusUpdateFromWebhookUseCase.execute(trackingNumber, status);
+    await dependenciesContainer.deliveryStatusUpdateFromWebhookUseCase.execute({ trackingNumber, status });
 
     reply.code(200).send();
   });
@@ -44,9 +48,41 @@ async function deliveryRoutes(fastify: FastifyInstance, opts: any) {
     const body: NRWWebhookPayload = req.body as NRWWebhookPayload;
     const { trackingNumber, status } = body;
 
-    await dependenciesContainer.deliveryStatusUpdateFromWebhookUseCase.execute(trackingNumber, status);
+    await dependenciesContainer.deliveryStatusUpdateFromWebhookUseCase.execute({ trackingNumber, status });
 
     reply.code(200).send();
+  });
+
+  fastify.get('/deliveries/:id', async (req, reply) => {
+    const { id } = req.params as DeliveryFindRequestDTO;
+
+    try {
+      const delivery = await dependenciesContainer.deliveryFindUseCase.execute({ id });
+
+      return delivery;
+    } catch (error) {
+      if (error instanceof HttpError) {
+        return reply.code(error.statusCode).send({ error });
+      }
+
+      return reply.code(500).send({ error });
+    }
+  });
+
+  fastify.get('/deliveries/tracking/:trackingNumber', async (req, reply) => {
+    const { trackingNumber } = req.params as DeliveryFindRequestDTO;
+
+    try {
+      const delivery = await dependenciesContainer.deliveryFindUseCase.execute({ trackingNumber });
+
+      return delivery;
+    } catch (error) {
+      if (error instanceof HttpError) {
+        return reply.code(error.statusCode).send({ error });
+      }
+
+      return reply.code(500).send({ error });
+    }
   });
 }
 

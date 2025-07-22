@@ -1,13 +1,15 @@
+import { UseCase } from '../interfaces/UseCaseInterface';
+
 import { DeliveryStatusValueObject } from '../../domain/value-objects/DeliveryStatusValueObject';
 import { FINAL_DELIVERY_STATUSES } from '../../domain/constants';
 import DeliveryEntity from '../../domain/entities/DeliveryEntity';
 
-class DeliveryStatusUpdateFromWebhookUseCase {
+class DeliveryStatusUpdateFromWebhookUseCase implements UseCase<{ trackingNumber: string, status: string }, void> {
   constructor(private deliveryRepository: any, private providerMap: any) {}
 
-  async execute(trackingNumber: string, status: string): Promise<void> {
+  async execute({ trackingNumber, status }: { trackingNumber: string, status: string }): Promise<void> {
     // Find delivery by tracking number.
-    const delivery: DeliveryEntity | undefined = await this.deliveryRepository.findByTrackingNumber(trackingNumber);
+    const delivery: DeliveryEntity = await this.deliveryRepository.find(trackingNumber);
 
     if (!delivery || FINAL_DELIVERY_STATUSES.includes(delivery.status)) {
       throw new Error('Delivery not found or already in a final status');

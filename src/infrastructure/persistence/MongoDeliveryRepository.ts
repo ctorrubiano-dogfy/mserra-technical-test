@@ -5,6 +5,7 @@ import { ProviderValueObject } from '../../domain/value-objects/ProviderValueObj
 import { DeliveryRepositoryInterface } from '../../domain/interfaces/DeliveryRepositoryInterface';
 import { FINAL_DELIVERY_STATUSES } from '../../domain/constants';
 import DeliveryEntity from '../../domain/entities/DeliveryEntity';
+import NotFoundError from '../../shared/errors/NotFoundError';
 
 const DeliverySchema = new Schema(
   {
@@ -36,9 +37,9 @@ class MongoDeliveryRepository implements DeliveryRepositoryInterface {
     await newDelivery.save();
   }
 
-  async findById(id: string): Promise<DeliveryEntity | undefined> {
-    const doc = await DeliveryModel.findById(id).exec();
-    if (!doc) return undefined;
+  async find(reference: string): Promise<DeliveryEntity> {
+    const doc = await DeliveryModel.findOne({ $or: [{ id: reference }, { trackingNumber: reference }] }).exec();
+    if (!doc) throw new NotFoundError('Delivery not found');
 
     return new DeliveryEntity(
       doc.id,
@@ -60,20 +61,6 @@ class MongoDeliveryRepository implements DeliveryRepositoryInterface {
       doc.trackingNumber || undefined,
       doc.provider as ProviderValueObject || undefined,
     ));
-  }
-
-  async findByTrackingNumber(trackingNumber: string): Promise<DeliveryEntity | undefined> {
-    const doc = await DeliveryModel.findOne({ trackingNumber });
-    if (!doc) return undefined;
-
-    return new DeliveryEntity(
-      doc.id,
-      doc.status as DeliveryStatusValueObject,
-      doc.deliveryDate || undefined,
-      doc.label || undefined,
-      doc.trackingNumber || undefined,
-      doc.provider as ProviderValueObject || undefined,
-    );
   }
 
   async updateById(deliveryId: string, delivery: DeliveryEntity): Promise<void> {

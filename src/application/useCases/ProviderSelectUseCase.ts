@@ -1,8 +1,10 @@
+import { UseCase } from '../interfaces/UseCaseInterface';
+
 import { ProviderValueObject } from '../../domain/value-objects/ProviderValueObject';
 import { ProviderSelectorInterface } from '../../domain/interfaces/ProviderSelectorInterface';
 import DeliveryEntity from '../../domain/entities/DeliveryEntity';
 
-class ProviderSelectUseCase {
+class ProviderSelectUseCase implements UseCase<DeliveryEntity, ProviderValueObject> {
   constructor(private providerSelector: ProviderSelectorInterface) {}
 
   execute(data?: DeliveryEntity): ProviderValueObject {

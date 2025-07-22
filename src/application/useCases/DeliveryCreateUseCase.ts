@@ -1,14 +1,16 @@
 import { ShipmentCreateDTO } from '../dtos/ShipmentCreateDTO';
 import { ShipmentResponseDTO } from '../dtos/ShipmentResponseDTO';
 import { DeliveryCreateDTO } from '../dtos/DeliveryCreateDTO';
+import ProviderSelectUseCase from './ProviderSelectUseCase';
+import { UseCase } from '../interfaces/UseCaseInterface';
+
 import { ProviderValueObject } from '../../domain/value-objects/ProviderValueObject';
 import { ProviderRepositoryInterface } from '../../domain/interfaces/ProviderRepositoryInterface';
 import { DeliveryRepositoryInterface } from '../../domain/interfaces/DeliveryRepositoryInterface';
 import { DeliveryStatusValueObject } from '../../domain/value-objects/DeliveryStatusValueObject';
 import DeliveryEntity from '../../domain/entities/DeliveryEntity';
-import ProviderSelectUseCase from './ProviderSelectUseCase';
 
-class DeliveryCreateUseCase {
+class DeliveryCreateUseCase implements UseCase<DeliveryCreateDTO, ShipmentResponseDTO> {
   constructor(
     private deliveryRepository: DeliveryRepositoryInterface,
     private providerSelectUseCase: ProviderSelectUseCase,
