@@ -4,6 +4,7 @@ import Fastify, { FastifyInstance } from 'fastify';
 import { DeliveryCreateDTO } from '../../application/dtos/DeliveryCreateDTO';
 import { DeliveryFindRequestDTO } from '../../application/dtos/DeliveryFindDTO';
 import { ShipmentResponseDTO } from '../../application/dtos/ShipmentResponseDTO';
+import { DeliveryDeleteRequestDTO } from '../../application/dtos/DeliveryDeleteDTO';
 import dependenciesContainer from '../container';
 
 import HttpError from '../../shared/errors/HttpError';
@@ -82,6 +83,29 @@ async function deliveryRoutes(fastify: FastifyInstance, opts: any) {
       }
 
       return reply.code(500).send({ error });
+    }
+  });
+
+  fastify.delete('/deliveries/:id', async (req, reply) => {
+    const { id } = req.params as { id: string };
+
+    try {
+      const result = await dependenciesContainer.deliveryDeleteUseCase.execute({ id });
+      return reply.code(200).send(result);
+    } catch (error) {
+      if (error instanceof HttpError) {
+        return reply.code(error.statusCode).send({ 
+          success: false, 
+          message: error.message,
+          error: error.name
+        });
+      }
+
+      return reply.code(500).send({ 
+        success: false, 
+        message: 'An unexpected error occurred',
+        error: (error as Error).message
+      });
     }
   });
 }

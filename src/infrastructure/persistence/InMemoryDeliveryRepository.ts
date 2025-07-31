@@ -27,6 +27,12 @@ class InMemoryDeliveryRepository implements DeliveryRepositoryInterface {
     if (index === -1) throw new NotFoundError(`Delivery with id ${deliveryId} not found.`);
     this.deliveries[index] = delivery;
   }
+  
+  async deleteById(deliveryId: string): Promise<void> {
+    const index: number = this.deliveries.findIndex(d => d.id === deliveryId);
+    if (index === -1) throw new NotFoundError(`Delivery with id ${deliveryId} not found.`);
+    this.deliveries.splice(index, 1);
+  }
 }
 
 export default InMemoryDeliveryRepository;

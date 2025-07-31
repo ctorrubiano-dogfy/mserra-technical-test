@@ -66,6 +66,13 @@ class MongoDeliveryRepository implements DeliveryRepositoryInterface {
   async updateById(deliveryId: string, delivery: DeliveryEntity): Promise<void> {
     await DeliveryModel.updateOne({ id: deliveryId }, delivery, { runValidators: true, new: true });
   }
+
+  async deleteById(deliveryId: string): Promise<void> {
+    const result = await DeliveryModel.deleteOne({ id: deliveryId });
+    if (result.deletedCount === 0) {
+      throw new NotFoundError(`Delivery with id ${deliveryId} not found.`);
+    }
+  }
 }
 
 async function connectToMongo() {
