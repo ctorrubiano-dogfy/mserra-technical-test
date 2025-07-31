@@ -10,6 +10,7 @@ import DeliveryStatusUpdateFromWebhookUseCase from '../application/useCases/Deli
 import RandomProviderSelector from './misc/RandomProviderSelector';
 import DistanceBasedProviderSelector from './misc/DistanceBasedProviderSelector';
 import DeliveryFindUseCase from '../application/useCases/DeliveryFindUseCase';
+import DeliveryDeleteUseCase from '../application/useCases/DeliveryDeleteUseCase';
 
 const providerMap: Record<ProviderValueObject, ProviderRepositoryInterface> = {
   [ProviderValueObject.NRW]: new NRWProviderRepository(),
@@ -23,6 +24,7 @@ const deliveryCreateUseCase = new DeliveryCreateUseCase(deliveryRepository, prov
 const deliveriesStatusPollUseCase = new DeliveriesStatusPollUseCase(deliveryRepository, providerMap);
 const deliveryStatusUpdateFromWebhookUseCase = new DeliveryStatusUpdateFromWebhookUseCase(deliveryRepository, providerMap);
 const deliveryFindUseCase = new DeliveryFindUseCase(deliveryRepository);
+const deliveryDeleteUseCase = new DeliveryDeleteUseCase(deliveryRepository);
 
 // Container for dependencies
 export default {
@@ -33,4 +35,5 @@ export default {
   deliveriesStatusPollUseCase,
   deliveryStatusUpdateFromWebhookUseCase,
   deliveryFindUseCase,
+  deliveryDeleteUseCase,
 };

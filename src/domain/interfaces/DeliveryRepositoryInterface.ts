@@ -5,4 +5,5 @@ export interface DeliveryRepositoryInterface {
   find(reference: string): Promise<DeliveryEntity>
   findAllActive(): Promise<DeliveryEntity[]>
   updateById(deliveryId: string, delivery: DeliveryEntity): Promise<void>
+  deleteById(deliveryId: string): Promise<void>
 }
